@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <script type="text/javascript" src="https://cdn.bootcss.com/canvasjs/1.7.0/canvasjs.js"></script>
+
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+
+    <title>Data line chart</title>
+
+    <style>
+        .chartContainer{
+            width: 850px;
+            height: 350px;
+        }
+        .canvasjs-chart-credit{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="chartContainer" class="chartContainer"></div>
+
+<script type="text/javascript">
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+        theme: "theme4",
+        animationEnabled: true,
+        axisX: {
+            valueFormatString: "YYYY.M.DD"
+
+        },
+        axisY: {
+            title: "Data line chart"
+        },
+        data: [
+            {
+                type: "line",
+                color: "rgba(103, 148, 239, 1)",
+                markerColor: "rgba(103, 148, 239, 1)",
+                markerSize: 12,
+                dataPoints: [
+                    { x: new Date(2017, 5, 8), y: 120, indexLabel: "120",markerType: "rainy"},
+                    { x: new Date(2017, 5, 9) , y: 361, indexLabel: "361",markerType: "rainy"},
+                    { x: new Date(2017, 5, 10) , y: 125, indexLabel: "125",markerType: "rainy"},
+                    { x: new Date(2017, 5, 11) , y: 420, indexLabel: "420",markerType: "rainy"},
+                    { x: new Date(2017, 5, 12) , y: 316, indexLabel: "316",markerType: "sunny"},
+                    { x: new Date(2017, 5, 13) , y: 200, indexLabel: "200",markerType: "rainy"},
+                    { x: new Date(2017, 5, 14) , y: 377, indexLabel: "377",markerType: "rainy"}
+                ]
+            }
+        ]
+    });
+    chart.render();
+
+    var images = [];
+    addImages(chart);
+
+    function addImages(chart) {
+        for(var i = 0; i < chart.data[0].dataPoints.length; i++){
+            var dpsName = chart.data[0].dataPoints[i].markerType;
+            if(dpsName == "rainy"){
+                images.push(
+                    $('<img>').attr('src', "https://canvasjs.com/wp-content/uploads/images/gallery/gallery-overview/rainy.png")
+                );
+            }
+            else if(dpsName == "sunny"){
+                images.push(
+                    $('<img>').attr('src', "https://canvasjs.com/wp-content/uploads/images/gallery/gallery-overview/sunny.png")
+                );
+            }
+            images[i].attr("class", dpsName)
+                .appendTo($("#chartContainer>.canvasjs-chart-container"));
+            positionImage(images[i], i);
+        }
+    }
+
+    function positionImage(image, index) {
+        var imageCenter = chart.axisX[0].convertValueToPixel(chart.data[0].dataPoints[index].x);
+        var imageY = chart.axisY[0].convertValueToPixel(chart.data[0].dataPoints[index].y);
+        var imageTop =  chart.axisY[0].convertValueToPixel(chart.axisY[0].maximum);
+        image.width('20px')
+            .css({
+                    "position": "absolute",
+                    "left": imageCenter - 10 + "px",
+                    "top":  imageY - 10 + "px"
+                }
+            );
+    }
+
+    $( window ).resize(function() {
+        var rainyCounter = 0, sunnyCounter = 0;
+        var imageCenter = 0;
+        for(var i=0;i<chart.data[0].dataPoints.length;i++){
+            imageCenter = chart.axisX[0].convertValueToPixel(chart.data[0].dataPoints[i].x) - 20;
+
+            if(chart.data[0].dataPoints[i].name == "rainy"){
+                $(".rainy").eq(rainyCounter++).css({ "left": imageCenter});
+            }
+            else if(chart.data[0].dataPoints[i].name == "sunny"){
+                $(".sunny").eq(sunnyCounter++).css({ "left": imageCenter});
+            }
+        }
+    });
+
+    function formatter(e) {
+        if(e.index === 0 && e.dataPoint.x === 0) {
+            return " Low " + e.dataPoint.y[e.index];
+        }
+        if(e.index == 1 && e.dataPoint.x === 0) {
+            return " High " + e.dataPoint.y[e.index];
+        }
+        else{
+            return e.dataPoint.y[e.index];
+        }
+    }
+</script>
+</body>
+</html>
