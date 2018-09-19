@@ -1,0 +1,6 @@
+This project use phpstudy working environment and SQL database.
+To open this web project.
+1. download the new version of phpstudy.
+2. put the code into a file named WWW (which is in 'PHPstudy'>'PHP tutorial').
+3. copy the code in 'user.SQL', paste and execute it in MYSQL_Front.
+4. use this address to get access to this web project : http://localhost/login.html
